@@ -5,6 +5,8 @@ var tasksToDoEl = document.querySelector("#tasks-to-do");
 // variable used for the task counter (ticket #)
 var taskIdCounter = 0;
 
+var pageContentEl = document.querySelector("#page-content");
+
 
 
 
@@ -97,10 +99,52 @@ var createTaskEl = function(taskDataObj){
   // increase task counter for next unique id
   taskIdCounter++;
 
+};
 
+
+// delete/ edit button code below
+var taskButtonHandler = function(event) {
+  // get target element from event
+  var targetEl = event.target;
+
+  if (targetEl.matches(".edit-btn")) {
+
+    var taskId = targetEl.getAttribute("data-task-id");
+    editTask(taskId);
+  } else if (targetEl.matches(".delete-btn")) {
+
+    var taskId = targetEl.getAttribute("data-task-id");
+    deleteTask(taskId);
+  }
+};
+
+
+var editTask = function(taskId)  {
+
+  // get task list item element
+  var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+  // get content from task name and type
+  var taskName = taskSelected.querySelector("h3.task-name").textContent;
+
+  var taskType = taskSelected.querySelector("span.task-type").textContent;
+
+  // write values of taskname and taskType to form to be edited
+  document.querySelector("input[name='task-name']").value = taskName;
+  document.querySelector("select[name='task-type']").value = taskType;
+
+  // set data attribute to the form with a value of the task's id so it knows which one is being edited
+  formEl.setAttribute("data-task-id", taskId);
+  // update form's button to reflect editing a task rather than creating a new one
+  document.querySelector("#save-task").textContent = "Save Task";
+};
+
+var deleteTask = function(taskId) {
+  var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+  taskSelected.remove();
 };
 
 formEl.addEventListener("submit", taskFormHandler);
 
-
+pageContentEl.addEventListener("click", taskButtonHandler);
 
